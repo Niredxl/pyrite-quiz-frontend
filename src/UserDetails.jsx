@@ -11,8 +11,11 @@ function UserDetails({ user, onDetailsSubmit }) {
     e.preventDefault();
     setError('');
 
+    console.log("Submitting with user object:", user);
+    console.log("Submitting with user ID:", user.id);
+
     try {
-      const response = await fetch('/api/auth/update-details', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/update-details`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, name, rollno }),
