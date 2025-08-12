@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import "./Login.css";
+import "./login.css";
 import { GoogleLogin } from "@react-oauth/google"
 
 function Login({ onLogin, onSwitchToRegister }) {

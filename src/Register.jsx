@@ -1,7 +1,7 @@
 // src/Register.jsx
 
 import React, { useState } from "react";
-import "./Login.css"; // You can reuse the same CSS file
+import "./login.css"; // You can reuse the same CSS file
 
 function Register({ onSwitchToLogin }) {
 const [email, setEmail] = useState("");
