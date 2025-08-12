@@ -1,6 +1,6 @@
 // src/UserDetails.jsx
 import React, { useState } from 'react';
-import './login.css'; // Reuse styles
+import './Login.css'; // Reuse styles
 
 function UserDetails({ user, onDetailsSubmit }) {
   const [name, setName] = useState('');
