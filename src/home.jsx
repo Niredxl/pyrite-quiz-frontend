@@ -38,7 +38,7 @@ function Home({ user, onStartQuiz, onLogout, items, loading, error }) {
   }, [user]);
 
   if (isLoading) {
-    return <p>Checking quiz status...</p>;
+    return <p className="loader">Checking quiz status...</p>;
   }
 
   return (
