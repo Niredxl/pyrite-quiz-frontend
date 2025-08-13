@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import jsPDF from "jspdf"; // ✅ Corrected capitalization
+import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./Quiz.css";
 import Questions from "./Questions";
@@ -15,18 +15,7 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
   );
   const resultRef = useRef();
 
-  function handleAnswer(option) {
-    const updatedSelectedOption = [...selectedOption];
-    updatedSelectedOption[currentQuestionIndex] = option;
-    setSelectedOption(updatedSelectedOption);
-    const updatedAnswer = [...userAnswer];
-    updatedAnswer[currentQuestionIndex] = {
-      question: questions[currentQuestionIndex].question,
-      userAnswer: option,
-      correctAnswer: questions[currentQuestionIndex].correct,
-    };
-    setUserAnswer(updatedAnswer);
-  }
+  // ... handleAnswer function ...
 
   async function handleSubmit() {
     let scr = 0;
@@ -45,7 +34,7 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
     handleSubmit();
   };
 
-  const handleDownloadAndGoHome = () => {
+  const handleDownloadPdf = () => {
     const input = resultRef.current;
     html2canvas(input, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
@@ -54,8 +43,6 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`quiz-result-${user.name}.pdf`);
-    }).then(() => {
-      onQuizEnd();
     });
   };
 
@@ -103,8 +90,8 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
       ) : (
         // --- This is the result section ---
         <div>
-          {/* ✅ This div contains everything you want in the PDF */}
-          <div ref={resultRef} className="result-container">
+          {/* ✅ Attach the ref to the specific div you want to capture and add a background */}
+          <div ref={resultRef} className="result-container" style={{ backgroundColor: 'white', padding: '20px' }}>
             <h1 className="your-name">{user.name}</h1>
             <div className="final">
               <h2>Quiz Completed!</h2>
@@ -134,10 +121,15 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
             </div>
           </div>
           
-          {/* ✅ The button is now outside the captured div */}
-          <button className="home-el" onClick={handleDownloadAndGoHome}>
-            Download PDF and Back to Home
-          </button>
+          {/* ✅ Separate the buttons for a more reliable user flow */}
+          <div className="action-buttons">
+            <button className="home-el" onClick={handleDownloadPdf}>
+              Download PDF
+            </button>
+            <button className="home-el" onClick={onQuizEnd}>
+              Back to Home
+            </button>
+          </div>
         </div>
       )}
     </>
