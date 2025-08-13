@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Quiz.css";
-import "./home.css";
+
 import Questions from "./Questions";
 import QuizTimer from "./QuizTimer";
 
@@ -103,7 +103,7 @@ function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
         </>
       ) : (
         <div>
-          <h3 className="home-welcome">{user.name}</h3>
+          <h1 className="your-name">{user.name}</h1>
           <div className="final">
             <h2>Quiz Completed!</h2>
             <p>

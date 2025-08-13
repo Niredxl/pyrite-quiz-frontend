@@ -28,6 +28,18 @@ body {
   box-sizing: border-box;
 }
 
+.your-name{
+  color: #e1e1e1;
+  font-size: 2rem;
+
+  font-family: 'bitcount', sans-serif;
+  font-weight: 300;
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .result-item {
   color: #e1e1e1;
   max-width: 350px;
