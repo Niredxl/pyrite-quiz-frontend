@@ -60,14 +60,18 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
   };
 const handleDownloadPdf = () => {
     const input = resultRef.current;
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`quiz-result-${user.name}.pdf`);
-    });
+    
+    // Add a small delay (e.g., 50 milliseconds)
+    setTimeout(() => {
+      html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`quiz-result-${user.name}.pdf`);
+      });
+    }, 50); // 50ms delay
 };
   return (
     <>
@@ -114,7 +118,7 @@ const handleDownloadPdf = () => {
         // --- This is the result section ---
         <div>
           {/* ✅ This div contains everything you want in the PDF */}
-          <div ref={resultRef} className="result-container">
+          <div ref={resultRef} className="result-container" style={{ backgroundColor: 'white', padding: '20px' }}>
             <h1 className="your-name">{user.name}</h1>
             <div className="final">
               <h2>Quiz Completed!</h2>
