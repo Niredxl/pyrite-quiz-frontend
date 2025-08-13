@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import jsPdf from "jspdf";
+import html2canvas from "html2canvas";
+
 import "./Quiz.css";
 
 import Questions from "./Questions";
 import QuizTimer from "./QuizTimer";
+
+
 
 // This component now receives 'questions' as a prop
 function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
@@ -15,6 +20,8 @@ function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
   const [selectedOption, setSelectedOption] = useState(
     Array(questions.length).fill(null)
   );
+
+  const resultRef = useRef();
 
   function handleAnswer(option) {
     const updatedSelectedOption = [...selectedOption];
@@ -49,6 +56,23 @@ function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
     alert("Time's up!!!");
     // We can reuse the handleSubmit logic here
     handleSubmit();
+  };
+
+   const handleDownloadAndGoHome = () => {
+    const input = resultRef.current;
+    html2canvas(input, { scale: 2 }) // Use scale for better quality
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`quiz-result-${user.name}.pdf`);
+      })
+      .then(() => {
+        // Go back home after generating the PDF
+        onQuizEnd();
+      });
   };
 
   return (
@@ -146,8 +170,8 @@ function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
             })}
           </div>
           
-          <button className="home-el" onClick={onQuizEnd}>
-            Back to home
+          <button className="home-el" onClick={handleDownloadAndGoHome}>
+            Download PDF and Back to Home
           </button>
         </div>
       )}
