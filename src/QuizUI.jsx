@@ -1,33 +1,24 @@
 import { useState, useRef } from "react";
-import jsPdf from "jspdf";
+import jsPDF from "jspdf"; // ✅ Corrected capitalization
 import html2canvas from "html2canvas";
-
 import "./Quiz.css";
-
 import Questions from "./Questions";
 import QuizTimer from "./QuizTimer";
 
-
-
-// This component now receives 'questions' as a prop
-function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
+function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [isSubmitted, setisSubmitted] = useState(false);
   const [userAnswer, setUserAnswer] = useState([]);
-  
-  // Initialize 'selectedOption' based on the length of the questions prop
   const [selectedOption, setSelectedOption] = useState(
     Array(questions.length).fill(null)
   );
-
   const resultRef = useRef();
 
   function handleAnswer(option) {
     const updatedSelectedOption = [...selectedOption];
     updatedSelectedOption[currentQuestionIndex] = option;
     setSelectedOption(updatedSelectedOption);
-
     const updatedAnswer = [...userAnswer];
     updatedAnswer[currentQuestionIndex] = {
       question: questions[currentQuestionIndex].question,
@@ -44,35 +35,28 @@ function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
         scr++;
       }
     });
-
     await onSaveResult(scr, questions.length);
     setScore(scr);
     setisSubmitted(true);
-
-    
   }
 
   const handleTimeUp = () => {
     alert("Time's up!!!");
-    // We can reuse the handleSubmit logic here
     handleSubmit();
   };
 
-   const handleDownloadAndGoHome = () => {
+  const handleDownloadAndGoHome = () => {
     const input = resultRef.current;
-    html2canvas(input, { scale: 2 }) // Use scale for better quality
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`quiz-result-${user.name}.pdf`);
-      })
-      .then(() => {
-        // Go back home after generating the PDF
-        onQuizEnd();
-      });
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`quiz-result-${user.name}.pdf`);
+    }).then(() => {
+      onQuizEnd();
+    });
   };
 
   return (
@@ -93,28 +77,19 @@ function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
               selectedOption={selectedOption[currentQuestionIndex]}
               onOptionSelect={handleAnswer}
             />
-            {/* back button */}
+            {/* Navigation buttons */}
             {currentQuestionIndex > 0 && (
               <button
                 className="back"
-                onClick={() => {
-                  if (currentQuestionIndex > 0) {
-                    setCurrentQuestionIndex(currentQuestionIndex - 1);
-                  }
-                }}
+                onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
               >
                 BACK
               </button>
             )}
-            {/* next or submit */}
             {currentQuestionIndex < questions.length - 1 ? (
               <button
                 className="next"
-                onClick={() => {
-                  if (currentQuestionIndex < questions.length - 1) {
-                    setCurrentQuestionIndex(currentQuestionIndex + 1);
-                  }
-                }}
+                onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
               >
                 NEXT
               </button>
@@ -126,50 +101,40 @@ function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
           </div>
         </>
       ) : (
+        // --- This is the result section ---
         <div>
-          <h1 className="your-name">{user.name}</h1>
-          <div className="final">
-            <h2>Quiz Completed!</h2>
-            <p>
-              Total Score : {score}/{questions.length}
-            </p>
-          </div>
-          <h3 className="review">Review Your Answers:</h3>
-          <div className="result-el">
-            {questions.map((q, i) => {
-              const ans = userAnswer[i];
-              return (
-                <div key={i} className="result-item">
-                  <strong>
-                    Q{i + 1}: {q.question}
-                  </strong>
-                  <br />
-                  <span>
-                    <b>Your Answer:</b>{" "}
-                    <span
-                      style={{
-                        color:
-                          ans && ans.userAnswer === q.correct
-                            ? "limegreen"
-                            : "red",
-                      }}
-                    >
-                      {ans && ans.userAnswer ? (
-                        ans.userAnswer
-                      ) : (
-                        <em>Not answered</em>
-                      )}
+          {/* ✅ This div contains everything you want in the PDF */}
+          <div ref={resultRef} className="result-container">
+            <h1 className="your-name">{user.name}</h1>
+            <div className="final">
+              <h2>Quiz Completed!</h2>
+              <p>Total Score : {score}/{questions.length}</p>
+            </div>
+            <h3 className="review">Review Your Answers:</h3>
+            <div className="result-el">
+              {questions.map((q, i) => {
+                const ans = userAnswer[i];
+                return (
+                  <div key={i} className="result-item">
+                    <strong>Q{i + 1}: {q.question}</strong>
+                    <br />
+                    <span>
+                      <b>Your Answer:</b>{" "}
+                      <span style={{ color: ans && ans.userAnswer === q.correct ? "limegreen" : "red" }}>
+                        {ans && ans.userAnswer ? ans.userAnswer : <em>Not answered</em>}
+                      </span>
                     </span>
-                  </span>
-                  <br />
-                  <span>
-                    <b>Correct Answer:</b> <span>{q.correct}</span>
-                  </span>
-                </div>
-              );
-            })}
+                    <br />
+                    <span>
+                      <b>Correct Answer:</b> <span>{q.correct}</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           
+          {/* ✅ The button is now outside the captured div */}
           <button className="home-el" onClick={handleDownloadAndGoHome}>
             Download PDF and Back to Home
           </button>
