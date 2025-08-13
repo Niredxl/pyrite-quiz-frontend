@@ -58,44 +58,8 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
       onQuizEnd();
     });
   };
-const handleDownloadPdf = () => {
-    const input = resultRef.current;
-    if (!input) {
-      console.error("The element to capture could not be found.");
-      return;
-    }
-
-    // Options to help html2canvas render correctly
-    const options = {
-      scale: 2,
-      useCORS: true, // For images from other origins
-      logging: true, // Enable logging for debugging
-      width: input.offsetWidth,
-      height: input.offsetHeight,
-    };
-
-    html2canvas(input, options).then((canvas) => {
-      // Check if the canvas is blank
-      const isBlank = !canvas.getContext('2d')
-        .getImageData(0, 0, canvas.width, canvas.height)
-        .data.some(channel => channel !== 0);
-
-      if (isBlank) {
-        console.error("html2canvas created a blank canvas. Check CSS properties like 'transform' or 'filter' on the target element.");
-        alert("Sorry, there was an error creating the PDF. The captured image was blank.");
-        return;
-      }
-        
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`quiz-result-${user.name}.pdf`);
-    }).catch(error => {
-        console.error("Error capturing element with html2canvas:", error);
-    });
+const handlePrint = () => {
+  window.print();
 };
 
   return (
@@ -143,7 +107,7 @@ const handleDownloadPdf = () => {
         // --- This is the result section ---
         <div>
           {/* ✅ This div contains everything you want in the PDF */}
-          <div ref={resultRef} className="result-container" style={{ backgroundColor: 'white', padding: '20px' }}>
+          <div ref={resultRef} className="result-container">
             <h1 className="your-name">{user.name}</h1>
             <div className="final">
               <h2>Quiz Completed!</h2>
@@ -175,8 +139,8 @@ const handleDownloadPdf = () => {
           
           {/* ✅ The button is now outside the captured div */}
           <div className="action-buttons">
-              <button className="home-el" onClick={handleDownloadPdf}>
-                  Download PDF
+              <button className="home-el" onClick={handlePrint}>
+                  Save as PDF
               </button>
               <button className="home-el" onClick={onQuizEnd}>
                   Back to Home
