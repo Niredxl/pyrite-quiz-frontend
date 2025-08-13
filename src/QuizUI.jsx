@@ -1,10 +1,11 @@
 import { useState } from "react";
 import "./Quiz.css";
+import "./home.css";
 import Questions from "./Questions";
 import QuizTimer from "./QuizTimer";
 
 // This component now receives 'questions' as a prop
-function QuizUI({ questions, onQuizEnd, onSaveResult }) {
+function QuizUI({ user,questions, onQuizEnd, onSaveResult }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [isSubmitted, setisSubmitted] = useState(false);
@@ -59,7 +60,7 @@ function QuizUI({ questions, onQuizEnd, onSaveResult }) {
       </div>
       {!isSubmitted ? (
         <>
-          <QuizTimer totalTime={1200} onTimeUp={handleTimeUp} />
+          <QuizTimer totalTime={600} onTimeUp={handleTimeUp} />
           <div className="container">
             <Questions
               question={questions[currentQuestionIndex].question}
@@ -102,6 +103,7 @@ function QuizUI({ questions, onQuizEnd, onSaveResult }) {
         </>
       ) : (
         <div>
+          <h3 className="home-welcome">{user.name}</h3>
           <div className="final">
             <h2>Quiz Completed!</h2>
             <p>

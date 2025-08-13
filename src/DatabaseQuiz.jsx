@@ -80,7 +80,7 @@ function DatabaseQuiz({ user, onQuizEnd }) {
     );
   }
 
-  return <QuizUI questions={questions} onQuizEnd={onQuizEnd} onSaveResult={saveResult} />;
+  return <QuizUI user={user} questions={questions} onQuizEnd={onQuizEnd} onSaveResult={saveResult} />;
 }
 
 export default DatabaseQuiz;
