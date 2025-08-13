@@ -4,6 +4,19 @@ body {
   background-position: center;
 }
 
+.action-buttons {
+  display: block;
+}
+
+/* Styles for when the page is printed */
+@media print {
+  .action-buttons, .home-appbar, .home-drawer {
+    display: none; /* Hide buttons and navigation when printing */
+  }
+  .result-container {
+    box-shadow: none; /* Remove shadows for printing */
+  }
+}
 .container {
   max-width: 500px;
   width: 95vw;

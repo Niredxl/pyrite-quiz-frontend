@@ -58,6 +58,9 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
       onQuizEnd();
     });
   };
+const handlePrint = () => {
+  window.print();
+};
 
   return (
     <>
@@ -135,9 +138,14 @@ function QuizUI({ user, questions, onQuizEnd, onSaveResult }) {
           </div>
           
           {/* ✅ The button is now outside the captured div */}
-          <button className="home-el" onClick={handleDownloadAndGoHome}>
-            Download PDF and Back to Home
-          </button>
+          <div className="action-buttons">
+              <button className="home-el" onClick={handlePrint}>
+                  Save as PDF
+              </button>
+              <button className="home-el" onClick={onQuizEnd}>
+                  Back to Home
+              </button>
+          </div>
         </div>
       )}
     </>
