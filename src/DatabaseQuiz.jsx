@@ -42,7 +42,7 @@ function DatabaseQuiz({ user, onQuizEnd }) {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/questions?limit=20`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/questions?limit=10`, {
           cache: 'no-cache',
         });
 
